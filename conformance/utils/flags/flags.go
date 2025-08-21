@@ -37,6 +37,7 @@ var (
 	RunTest                    = flag.String("run-test", "", "Name of a single test to run, instead of the whole suite")
 	ExemptFeatures             = flag.String("exempt-features", "", "Exempt Features excluded from conformance tests suites")
 	EnableAllSupportedFeatures = flag.Bool("all-features", false, "Whether to enable all supported features for conformance tests")
+	CoreOnlyFeatures           = flag.Bool("core-only", false, "Restricts tests to only run core tests")
 	NamespaceLabels            = flag.String("namespace-labels", "", "Comma-separated list of name=value labels to add to test namespaces")
 	NamespaceAnnotations       = flag.String("namespace-annotations", "", "Comma-separated list of name=value annotations to add to test namespaces")
 	ImplementationOrganization = flag.String("organization", "", "Implementation's Organization")

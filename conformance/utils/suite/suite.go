@@ -152,6 +152,7 @@ type ConformanceOptions struct {
 	SupportedFeatures          FeaturesSet
 	ExemptFeatures             FeaturesSet
 	EnableAllSupportedFeatures bool
+	CoreOnlyFeatures           bool
 	TimeoutConfig              config.TimeoutConfig
 	// SkipTests contains all the tests not to be run and can be used to opt out
 	// of specific tests
@@ -193,6 +194,8 @@ func NewConformanceTestSuite(options ConformanceOptions) (*ConformanceTestSuite,
 	supportedFeatures := options.SupportedFeatures.Difference(options.ExemptFeatures)
 	isInferred := false
 	switch {
+	case options.CoreOnlyFeatures:
+		supportedFeatures = features.SetsToNamesSet(features.CoreFeatures)
 	case options.EnableAllSupportedFeatures:
 		supportedFeatures = features.SetsToNamesSet(features.AllFeatures)
 	case shouldInferSupportedFeatures(&options):
@@ -289,21 +292,23 @@ func NewConformanceTestSuite(options ConformanceOptions) (*ConformanceTestSuite,
 				suite.SupportedFeatures.Insert(f)
 			}
 		}
-		for _, f := range conformanceProfile.ExtendedFeatures.UnsortedList() {
-			if options.SupportedFeatures.Has(f) {
-				if suite.extendedSupportedFeatures[conformanceProfileName] == nil {
-					suite.extendedSupportedFeatures[conformanceProfileName] = FeaturesSet{}
+		if !options.CoreOnlyFeatures {
+			for _, f := range conformanceProfile.ExtendedFeatures.UnsortedList() {
+				if options.SupportedFeatures.Has(f) {
+					if suite.extendedSupportedFeatures[conformanceProfileName] == nil {
+						suite.extendedSupportedFeatures[conformanceProfileName] = FeaturesSet{}
+					}
+					suite.extendedSupportedFeatures[conformanceProfileName].Insert(f)
+				} else {
+					if suite.extendedUnsupportedFeatures[conformanceProfileName] == nil {
+						suite.extendedUnsupportedFeatures[conformanceProfileName] = FeaturesSet{}
+					}
+					suite.extendedUnsupportedFeatures[conformanceProfileName].Insert(f)
 				}
-				suite.extendedSupportedFeatures[conformanceProfileName].Insert(f)
-			} else {
-				if suite.extendedUnsupportedFeatures[conformanceProfileName] == nil {
-					suite.extendedUnsupportedFeatures[conformanceProfileName] = FeaturesSet{}
+				// Add Exempt Features into unsupported features list
+				if options.ExemptFeatures.Has(f) {
+					suite.extendedUnsupportedFeatures[conformanceProfileName].Insert(f)
 				}
-				suite.extendedUnsupportedFeatures[conformanceProfileName].Insert(f)
-			}
-			// Add Exempt Features into unsupported features list
-			if options.ExemptFeatures.Has(f) {
-				suite.extendedUnsupportedFeatures[conformanceProfileName].Insert(f)
 			}
 		}
 	}

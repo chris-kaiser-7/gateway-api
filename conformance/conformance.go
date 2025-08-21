@@ -89,6 +89,7 @@ func DefaultOptions(t *testing.T) suite.ConformanceOptions {
 		ConformanceProfiles:        conformanceProfiles,
 		Debug:                      *flags.ShowDebug,
 		EnableAllSupportedFeatures: *flags.EnableAllSupportedFeatures,
+		CoreOnlyFeatures:           *flags.CoreOnlyFeatures,
 		ExemptFeatures:             exemptFeatures,
 		ManifestFS:                 []fs.FS{&Manifests},
 		GatewayClassName:           *flags.GatewayClassName,

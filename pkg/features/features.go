@@ -62,6 +62,14 @@ var (
 			Insert(MeshExtendedFeatures.UnsortedList()...).
 			Insert(GRPCRouteCoreFeatures.UnsortedList()...)
 
+	CoreFeatures = sets.New[Feature]().
+			Insert(GatewayCoreFeatures.UnsortedList()...).
+			Insert(ReferenceGrantCoreFeatures.UnsortedList()...).
+			Insert(HTTPRouteCoreFeatures.UnsortedList()...).
+			Insert(TLSRouteCoreFeatures.UnsortedList()...).
+			Insert(MeshCoreFeatures.UnsortedList()...).
+			Insert(GRPCRouteCoreFeatures.UnsortedList()...)
+
 	featureMap = map[FeatureName]Feature{}
 )
 
